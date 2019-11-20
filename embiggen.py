@@ -18,8 +18,10 @@ def embiggen():
     big_frame = pd.concat(frames)
     big_frame['url'] = 'https://www.citizensadvice.org.uk' + big_frame['Path']
     big_frame.to_pickle(os.path.join(parentPath,"store","big_frame.pkl"))
-    urls = big_frame.url
-    urls.to_csv(os.path.join(parentPath,"store","urls.csv"))
+    urls = pd.DataFrame(big_frame.url)
+    urls.drop_duplicates(keep='first', inplace=True)
+    urls["check"] = ""
+    urls.to_csv(os.path.join(parentPath,"store","urls.csv"),header=True)
     
 
 if __name__ == "__main__":

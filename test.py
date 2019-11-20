@@ -5,32 +5,14 @@ import re, os
 from io import StringIO
 
 
-def body_content():
-
-    url = "https://www.citizensadvice.org.uk/work/rights-at-work/parental-rights/rights-while-youre-on-maternity-leave/"
-    try:
-        page = requests.get(url)
-        html = page.text
-        soup = bs4.BeautifulSoup(html, "lxml")
-        bodycopy = soup.find(class_ = 'articleContent')
-        bodycopytext = bodycopy.get_text()
-        return bodycopytext
-    except:
-        return "no bodycopy"
-
-
-def check(txt):
-    try:
-        return re.search(" her | she |(\b..?\/\b)", txt)
-    except Exception as err:
-        return err
-
-
+path1 = os.path.realpath(__file__)
+parentPath = os.path.dirname(path1)
 
 def main():
-    x = str(body_content())
-    y = check(x)
-    print(y)
+    urls = pd.read_csv(os.path.join(parentPath,"store","urls.csv"))
+    x = urls[:5]
+    print(x.index.values)
+
 
 
 if __name__ == "__main__":
