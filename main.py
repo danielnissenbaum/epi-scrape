@@ -12,40 +12,41 @@ urls = pd.read_csv(os.path.join(parentPath,"store","urls.csv"))
 username = os.environ.get('epiname')
 password = os.environ.get('epipass')
 details = "username=" + username + "&password=" + password
-edit_login = "https://edit.citizensadvice.org.uk/login/?" + details
+edit_login = "https://www.citizensadvice.org.uk/login/?" + details
+
+s = requests.Session()
+s.get(edit_login)
 
 
 
 def check(url):
     try:
-        with requests.Session() as login:
-            login.get(edit_login)
+        page = s.get(url)
+        html = page.text
+        
+        if page.status_code == 404:
+            return "404 page"
 
 
-            with login.get(url, stream = True) as getting:
-                html = getting.text
-                print(html)
+        soup = bs4.BeautifulSoup(html, 'html.parser')
+        bodycopy = soup.find(class_ = 'articleContent')
+        if bodycopy is None:
+            return "No article content to check"
+        
+        bodycopytext = bodycopy.get_text()
+        print(bodycopytext)
 
+        try:
+            regex = r"\bher\b|\bshe\b|(\b[a-zA-Z][a-zA-Z]?\/\b)"
+            test = re.findall(regex, bodycopytext)
+            return len(test)
+        except AttributeError:
+            return "no match"
+        except Exception as e:
+            return "match error - "+str(e)
 
-
-        #s = requests.Session()
-        #s.get(edit_login)
-
-        #page = s.get(url)
-        #html = page.text
-        #print(page)
-
-
-        #soup = bs4.BeautifulSoup(html, 'html.parser')
-        #bodycopy = soup.find(class_ = 'articleContent')
-        #bodycopytext = bodycopy.get_text()
-
-        try: 
-            return re.search(" her | she |(\b..?\/\b)", bodycopytext)
-        except:
-            return "a checking error"
     except Exception as e:
-        return str(e)
+        return "url error - "+str(e)
 
       
 
@@ -54,7 +55,7 @@ def final():
     #urls['check'] = urls["url"].apply(lambda x: Row(x.key), check(x) if x == 3 else None)
     #urls.iloc[1::5]
 
-    df2 = urls.iloc[1:2]
+    df2 = urls.iloc[7:8]
 
 
     df2["check"] = df2["url"].apply(check)
