@@ -4,6 +4,9 @@ import pandas as pd
 import re, os
 from io import StringIO
 import numpy as np
+from tqdm import tqdm
+
+tqdm.pandas()
 
 path1 = os.path.realpath(__file__)
 parentPath = os.path.dirname(path1)
@@ -31,13 +34,16 @@ def check(url):
         soup = bs4.BeautifulSoup(html, 'html.parser')
         bodycopy = soup.find(class_ = 'articleContent')
         if bodycopy is None:
-            return "No article content to check"
+            bodycopy = soup.find(class_ = 'main-content')
+            if bodycopy is None:
+                return "i can not search the text"
+
         
         bodycopytext = bodycopy.get_text()
-        print(bodycopytext)
+        #print(bodycopytext)
 
         try:
-            regex = r"\bher\b|\bshe\b|(\b[a-zA-Z][a-zA-Z]?\/\b)"
+            regex = r"\btransgender\b|\bsame.?sex\b|\bgender\b|\btranssexual\b|\bsingle.?sex\b"
             test = re.findall(regex, bodycopytext)
             return len(test)
         except AttributeError:
@@ -55,10 +61,10 @@ def final():
     #urls['check'] = urls["url"].apply(lambda x: Row(x.key), check(x) if x == 3 else None)
     #urls.iloc[1::5]
 
-    df2 = urls.iloc[7:8]
+    df2 = urls
 
 
-    df2["check"] = df2["url"].apply(check)
+    df2["check"] = df2["url"].progress_apply(check)
     
     df2.to_csv(os.path.join(parentPath,"store","data.csv"),header=True)
 

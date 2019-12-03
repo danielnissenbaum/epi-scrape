@@ -8,7 +8,7 @@ parentPath = os.path.dirname(path1)
 
 def embiggen():
     public = pd.read_pickle(os.path.join(parentPath,"store","public.pkl"))
-    adviser = public = pd.read_pickle(os.path.join(parentPath,"store","adviser.pkl"))
+    adviser = pd.read_pickle(os.path.join(parentPath,"store","adviser.pkl"))
     report_list = [public,adviser]
 
     frames = []

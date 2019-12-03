@@ -23,7 +23,7 @@ def epi_pages_report():
     parentPath = os.path.dirname(path1)
 
     epi_login = edit_login
-    public = "https://edit.citizensadvice.org.uk/api/reports/section.csv?root=6_242750"
+    public = "https://edit.citizensadvice.org.uk/api/reports/section.csv?root=6_260261"
     advisernet = "https://edit.citizensadvice.org.uk/api/reports/section.csv?root=36473_242727"
     public = makeFrame(public)
     adviser = makeFrame(advisernet)
